@@ -1,0 +1,68 @@
+# Default configuration for Athena Recursive AI MoE System
+# This file demonstrates the complete configuration structure
+
+orchestrator:
+  url: http://localhost:1234/v1
+  model_name: qwen2.5-14b-instruct
+  gpu_id: 0  # First 7900 XT
+  max_tokens: 2048
+  temperature: 0.7
+  top_p: 0.9
+  timeout: 120
+
+reasoning_expert:
+  url: http://localhost:1235/v1
+  model_name: phi-3.5-mini-instruct
+  gpu_id: 1  # Second 7900 XT
+  max_tokens: 2048
+  temperature: 0.5  # Lower temperature for logical reasoning
+  top_p: 0.9
+  timeout: 60
+
+creative_expert:
+  url: http://localhost:1236/v1
+  model_name: mistral-7b-instruct
+  gpu_id: 1
+  max_tokens: 2048
+  temperature: 0.9  # Higher temperature for creativity
+  top_p: 0.95
+  timeout: 60
+
+technical_expert:
+  url: http://localhost:1237/v1
+  model_name: codeqwen-7b-instruct
+  gpu_id: 1
+  max_tokens: 4096  # More tokens for code generation
+  temperature: 0.3  # Low temperature for precise code
+  top_p: 0.9
+  timeout: 90
+
+memory_expert:
+  url: http://localhost:1238/v1
+  model_name: llama-3.1-8b-instruct
+  gpu_id: 1
+  max_tokens: 2048
+  temperature: 0.5
+  top_p: 0.9
+  timeout: 60
+
+gwt:
+  attention_threshold: 0.6
+  workspace_size: 5
+  broadcast_decay: 0.9
+  enable_competition: true
+
+routing:
+  enable_parallel: true
+  confidence_threshold: 0.7
+  max_retries: 3
+  timeout_per_expert: 60
+
+logging:
+  level: INFO
+  file: athena.log
+  format: "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan> - <level>{message}</level>"
+  rotation: "10 MB"
+
+max_context_length: 8192
+conversation_history_size: 10
