@@ -1,0 +1,11 @@
+# Core dependencies for Athena Recursive AI
+pydantic>=2.5.0
+pyyaml>=6.0
+requests>=2.31.0
+aiohttp>=3.9.0
+python-dotenv>=1.0.0
+rich>=13.7.0
+typer>=0.9.0
+loguru>=0.7.2
+
+# Development dependencies (install with: pip install -r requirements-dev.txt)
