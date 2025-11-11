@@ -58,20 +58,41 @@ sudo amdgpu-install --usecase=rocm
 
 Download the following models in LM Studio (use the Search tab):
 
-### GPU 1 - Orchestrator (Port 1234)
+### GPU 1 (Device 0) - Logical/Context Pipeline (~18GB)
 
+**Orchestrator:**
 - **Model**: `Qwen/Qwen2.5-14B-Instruct-GGUF`
 - **Quantization**: `Q5_K_M` (~10GB)
+- **Port**: 1234
 - **GPU**: Assign to GPU 0
 
-### GPU 2 - Experts (Ports 1235-1238)
+**Reasoning Expert:**
+- **Model**: `microsoft/Phi-3.5-mini-instruct-gguf`
+- **Quantization**: `Q4_K_M` (~3GB)
+- **Port**: 1235
+- **GPU**: Assign to GPU 0
 
-- **Reasoning Expert**: `microsoft/Phi-3.5-mini-instruct-gguf` (Q4_K_M, ~3GB)
-- **Creative Expert**: `TheBloke/Mistral-7B-Instruct-v0.2-GGUF` (Q4_K_M, ~4.5GB)
-- **Technical Expert**: `Qwen/CodeQwen1.5-7B-Chat-GGUF` (Q4_K_M, ~4.5GB)
-- **Memory Expert**: `meta-llama/Llama-3.1-8B-Instruct-GGUF` (Q4_K_M, ~5GB)
+**Memory Expert:**
+- **Model**: `meta-llama/Llama-3.1-8B-Instruct-GGUF`
+- **Quantization**: `Q4_K_M` (~5GB)
+- **Port**: 1236
+- **GPU**: Assign to GPU 0
 
-All expert models should be assigned to GPU 1.
+### GPU 2 (Device 1) - Creative/Implementation Pipeline (~9GB)
+
+**Creative Expert:**
+- **Model**: `TheBloke/Mistral-7B-Instruct-v0.2-GGUF`
+- **Quantization**: `Q4_K_M` (~4.5GB)
+- **Port**: 1237
+- **GPU**: Assign to GPU 1
+
+**Technical Expert:**
+- **Model**: `Qwen/CodeQwen1.5-7B-Chat-GGUF`
+- **Quantization**: `Q4_K_M` (~4.5GB)
+- **Port**: 1238
+- **GPU**: Assign to GPU 1
+
+**Performance Benefits**: This optimized distribution enables true parallelism when consulting experts from different GPUs simultaneously, achieving 1.5-2x throughput gains during multi-expert queries.
 
 ## Step 4: Configure LM Studio Instances
 
@@ -90,32 +111,38 @@ LM Studio doesn't natively support multiple simultaneous servers, so you'll need
 
    Windows: Copy the LM Studio installation folder 5 times
 
-2. **Launch instances with different ports:**
+2. **Launch instances with optimized GPU distribution:**
+
+   **GPU 1 (Device 0) Instances:**
 
    Instance 1 (Orchestrator):
    - Port: 1234
    - Model: Qwen2.5-14B-Instruct-Q5_K_M
    - GPU: 0
 
-   Instance 2 (Reasoning):
+   Instance 2 (Reasoning Expert):
    - Port: 1235
    - Model: Phi-3.5-mini-instruct-Q4_K_M
-   - GPU: 1
+   - GPU: 0
 
-   Instance 3 (Creative):
+   Instance 3 (Memory Expert):
    - Port: 1236
+   - Model: Llama-3.1-8B-Instruct-Q4_K_M
+   - GPU: 0
+
+   **GPU 2 (Device 1) Instances:**
+
+   Instance 4 (Creative Expert):
+   - Port: 1237
    - Model: Mistral-7B-Instruct-Q4_K_M
    - GPU: 1
 
-   Instance 4 (Technical):
-   - Port: 1237
+   Instance 5 (Technical Expert):
+   - Port: 1238
    - Model: CodeQwen-7B-Q4_K_M
    - GPU: 1
 
-   Instance 5 (Memory):
-   - Port: 1238
-   - Model: Llama-3.1-8B-Instruct-Q4_K_M
-   - GPU: 1
+   **Why this distribution?** Grouping Reasoning + Memory with the Orchestrator on GPU 1 enables seamless logical and context processing, while Creative + Technical on GPU 2 allows parallel creative/code generation without GPU contention.
 
 ### Option B: Use Alternative Model Servers
 

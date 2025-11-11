@@ -141,22 +141,22 @@ class AthenaConfig(BaseModel):
             reasoning_expert=ModelEndpoint(
                 url=os.getenv("REASONING_EXPERT_URL", "http://localhost:1235/v1"),
                 model_name=os.getenv("REASONING_MODEL", "phi-3.5-mini-instruct"),
-                gpu_id=int(os.getenv("EXPERTS_GPU", "1")),
+                gpu_id=int(os.getenv("REASONING_GPU", "0")),  # GPU 1 for logical tasks
             ),
             creative_expert=ModelEndpoint(
-                url=os.getenv("CREATIVE_EXPERT_URL", "http://localhost:1236/v1"),
+                url=os.getenv("CREATIVE_EXPERT_URL", "http://localhost:1237/v1"),
                 model_name=os.getenv("CREATIVE_MODEL", "mistral-7b-instruct"),
-                gpu_id=int(os.getenv("EXPERTS_GPU", "1")),
+                gpu_id=int(os.getenv("CREATIVE_GPU", "1")),  # GPU 2 for creative tasks
             ),
             technical_expert=ModelEndpoint(
-                url=os.getenv("TECHNICAL_EXPERT_URL", "http://localhost:1237/v1"),
+                url=os.getenv("TECHNICAL_EXPERT_URL", "http://localhost:1238/v1"),
                 model_name=os.getenv("TECHNICAL_MODEL", "codeqwen-7b-instruct"),
-                gpu_id=int(os.getenv("EXPERTS_GPU", "1")),
+                gpu_id=int(os.getenv("TECHNICAL_GPU", "1")),  # GPU 2 for code tasks
             ),
             memory_expert=ModelEndpoint(
-                url=os.getenv("MEMORY_EXPERT_URL", "http://localhost:1238/v1"),
+                url=os.getenv("MEMORY_EXPERT_URL", "http://localhost:1236/v1"),
                 model_name=os.getenv("MEMORY_MODEL", "llama-3.1-8b-instruct"),
-                gpu_id=int(os.getenv("EXPERTS_GPU", "1")),
+                gpu_id=int(os.getenv("MEMORY_GPU", "0")),  # GPU 1 for context-heavy tasks
             ),
             gwt=GWTConfig(
                 attention_threshold=float(os.getenv("GWT_ATTENTION_THRESHOLD", "0.6")),
